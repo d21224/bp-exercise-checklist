@@ -1,0 +1,14 @@
+{
+  "name": "오늘의 혈압 운동",
+  "short_name": "혈압운동",
+  "id": "bp-exercise-checklist-v1",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f1e8",
+  "theme_color": "#173f35",
+  "lang": "ko",
+  "icons": [
+    {"src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}

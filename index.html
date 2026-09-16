@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f35">
+  <meta name="description" content="혈압 관리를 위한 주간 운동 체크리스트">
+  <meta name="app-version" content="1.0.0">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <title>오늘의 혈압 운동</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <p id="today-label" class="eyebrow"></p>
+      <h1>오늘의 혈압 운동</h1>
+      <div class="progress-row">
+        <div>
+          <strong id="today-progress">0 / 0</strong>
+          <span>오늘 완료</span>
+        </div>
+        <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
+      </div>
+    </header>
+
+    <nav class="tab-bar" aria-label="화면 선택">
+      <button class="tab is-active" data-view-button="today" aria-pressed="true">오늘</button>
+      <button class="tab" data-view-button="blood-pressure" aria-pressed="false">혈압 기록</button>
+      <button class="tab" data-view-button="week" aria-pressed="false">주간 보기</button>
+    </nav>
+
+    <section id="today-view" class="view is-active" aria-labelledby="today-heading">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">DAILY PLAN</p>
+          <h2 id="today-heading">오늘 할 일</h2>
+        </div>
+        <span class="pace-badge">대화 가능한 강도</span>
+      </div>
+      <div id="task-list" class="task-list"></div>
+      <aside class="tip-card">
+        <strong>오늘의 원칙</strong>
+        <p>숨을 참지 말고, 준비운동과 마무리운동을 각각 5분씩 하세요.</p>
+      </aside>
+    </section>
+
+    <section id="blood-pressure-view" class="view" aria-labelledby="bp-heading" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">BLOOD PRESSURE</p>
+          <h2 id="bp-heading">혈압 기록</h2>
+        </div>
+      </div>
+      <div class="period-switch" role="group" aria-label="측정 시간">
+        <button class="period-button is-active" data-period="morning" aria-pressed="true">아침</button>
+        <button class="period-button" data-period="evening" aria-pressed="false">저녁</button>
+      </div>
+      <form id="bp-form" class="bp-card">
+        <div class="bp-inputs">
+          <label>수축기 혈압<input id="systolic" name="systolic" type="number" inputmode="numeric" min="60" max="260" placeholder="127" required><span>mmHg</span></label>
+          <span class="slash">/</span>
+          <label>이완기 혈압<input id="diastolic" name="diastolic" type="number" inputmode="numeric" min="40" max="160" placeholder="80" required><span>mmHg</span></label>
+        </div>
+        <button id="bp-save" class="primary-button" type="submit">아침 혈압 저장</button>
+      </form>
+      <div id="bp-feedback" aria-live="polite"></div>
+      <div id="bp-history" class="history-list"></div>
+      <p class="medical-note">한 번의 수치로 진단하지 않습니다. 가정혈압 평균이 135/85 이상이면 의료진과 상담하세요.</p>
+    </section>
+
+    <section id="week-view" class="view" aria-labelledby="week-heading" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">WEEKLY ROUTINE</p>
+          <h2 id="week-heading">이번 주 운동</h2>
+        </div>
+      </div>
+      <div id="week-progress" class="week-summary"></div>
+      <div id="week-list" class="week-list"></div>
+    </section>
+  </main>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
