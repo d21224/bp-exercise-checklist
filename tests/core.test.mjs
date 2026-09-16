@@ -26,6 +26,22 @@ test('weekday plan includes daily habits and the correct main workout', () => {
   assert.equal(saturday.some((item) => item.id === 'workout-bike-60'), true);
 });
 
+test('every main workout includes concrete step-by-step actions', () => {
+  for (let offset = 0; offset < 7; offset += 1) {
+    const date = new Date(2026, 8, 14 + offset);
+    const workout = getPlanForDay(date).find((item) =>
+      item.id.startsWith('workout') || item.id.startsWith('strength') || item.id.startsWith('recovery')
+    );
+    assert.ok(Array.isArray(workout.steps));
+    assert.ok(workout.steps.length >= 2);
+  }
+
+  const thursday = getPlanForDay(new Date(2026, 8, 17)).find((item) => item.id === 'strength-thu');
+  assert.ok(thursday.steps.some((step) => step.includes('레그프레스')));
+  assert.ok(thursday.steps.some((step) => step.includes('체스트프레스')));
+  assert.ok(thursday.steps.some((step) => step.includes('실내자전거')));
+});
+
 test('task completion persists as a date-scoped boolean', () => {
   const state = createEmptyState();
   const changed = toggleTask(state, '2026-09-17', 'strength-thu');

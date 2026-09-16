@@ -41,9 +41,9 @@ function renderToday() {
   document.querySelector('#today-progress').textContent = `${done} / ${plan.length}`;
   document.querySelector('#progress-fill').style.width = `${Math.round((done / plan.length) * 100)}%`;
   document.querySelector('#task-list').innerHTML = plan.map((item) => `
-    <button class="task" type="button" data-task-id="${item.id}" data-completed="${Boolean(completions[item.id])}" aria-pressed="${Boolean(completions[item.id])}">
+    <button class="task ${item.steps ? 'has-steps' : ''}" type="button" data-task-id="${item.id}" data-completed="${Boolean(completions[item.id])}" aria-pressed="${Boolean(completions[item.id])}">
       <span class="task-check" aria-hidden="true">${completions[item.id] ? '✓' : ''}</span>
-      <span><strong>${item.title}</strong><small>${item.detail}</small></span>
+      <span><strong>${item.title}</strong><small>${item.detail}</small>${item.steps ? `<ol class="task-steps">${item.steps.map((step) => `<li>${step}</li>`).join('')}</ol>` : ''}</span>
     </button>
   `).join('');
 }
@@ -95,7 +95,8 @@ function renderWeek() {
     const workout = plan.find((item) => item.id.startsWith('workout') || item.id.startsWith('strength') || item.id.startsWith('recovery'));
     days.push(`<article class="week-day ${key === todayKey ? 'today' : ''}" data-week-day>
       <header><strong>${DAY_NAMES[date.getDay()]}요일 ${date.getDate()}일${key === todayKey ? ' · 오늘' : ''}</strong><span>${done}/${plan.length}</span></header>
-      <p>${workout.title}<br>${workout.detail}</p>
+      <p><strong>${workout.title}</strong><br>${workout.detail}</p>
+      <ol class="week-steps">${workout.steps.map((step) => `<li>${step}</li>`).join('')}</ol>
     </article>`);
   }
   document.querySelector('#week-list').innerHTML = days.join('');

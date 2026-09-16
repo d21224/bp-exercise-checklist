@@ -39,6 +39,8 @@ h2 { margin: 0; font-size: 1.28rem; letter-spacing: -.035em; }
 .task-check { display: grid; place-items: center; width: 28px; height: 28px; border: 2px solid #b9c8c0; border-radius: 9px; color: white; font-weight: 900; }
 .task strong { display: block; margin-bottom: 4px; font-size: 1rem; }
 .task small { color: var(--muted); font-size: .81rem; line-height: 1.45; }
+.task-steps, .week-steps { margin: 11px 0 0; padding-left: 1.25rem; color: var(--muted); font-size: .8rem; line-height: 1.65; }
+.task-steps li::marker, .week-steps li::marker { color: var(--green); font-weight: 800; }
 .task[data-completed="true"] { background: #edf4ef; border-color: #c8dccf; }
 .task[data-completed="true"] .task-check { border-color: var(--green); background: var(--green); }
 .task[data-completed="true"] strong { text-decoration: line-through; text-decoration-thickness: 1.5px; opacity: .68; }
@@ -72,11 +74,13 @@ h2 { margin: 0; font-size: 1.28rem; letter-spacing: -.035em; }
 .week-day header strong { font-size: .95rem; }
 .week-day header span { color: var(--muted); font-size: .78rem; }
 .week-day p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.45; }
+.week-day p strong { color: var(--ink); }
 
 @media (min-width: 700px) {
   .app-shell { padding-top: 42px; }
   .task-list { grid-template-columns: 1fr 1fr; }
   .task { min-height: 104px; }
+  .task.has-steps { grid-column: 1 / -1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

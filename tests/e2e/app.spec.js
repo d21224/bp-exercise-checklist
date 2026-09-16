@@ -28,6 +28,9 @@ test('weekly view shows all seven days and progress', async ({page}) => {
   await page.getByRole('button', {name: '주간 보기'}).click();
   await expect(page.locator('[data-week-day]')).toHaveCount(7);
   await expect(page.getByText(/이번 주 \d+% 완료/)).toBeVisible();
+  const thursday = page.locator('[data-week-day]').filter({hasText: '목요일'});
+  await expect(thursday.getByText(/레그프레스/)).toBeVisible();
+  await expect(thursday.getByText(/체스트프레스/)).toBeVisible();
 });
 
 test('mobile layout does not overflow horizontally', async ({page}) => {

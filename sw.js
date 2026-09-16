@@ -1,4 +1,4 @@
-const CACHE = 'bp-exercise-checklist-v1.0.0';
+const CACHE = 'bp-exercise-checklist-v1.1.0';
 const ASSETS = ['./', './index.html', './styles.css', './src/app.js', './src/app-core.js', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', (event) => {
