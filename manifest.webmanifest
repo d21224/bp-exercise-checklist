@@ -1,6 +1,6 @@
 {
-  "name": "오늘의 혈압 운동",
-  "short_name": "혈압운동",
+  "name": "오늘의 운동 루틴",
+  "short_name": "운동루틴",
   "id": "bp-exercise-checklist-v1",
   "start_url": "./",
   "scope": "./",

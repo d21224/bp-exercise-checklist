@@ -1,8 +1,3 @@
-const DAILY = [
-  {id: 'morning-bp', title: '아침 혈압 기록', detail: '화장실 후 · 커피와 식사 전'},
-  {id: 'evening-bp', title: '저녁 혈압 기록', detail: '앉아서 5분 쉰 뒤'}
-];
-
 const WORKDAY = [
   {id: 'stairs', title: '회사 계단 12층', detail: '대화 가능한 속도로'},
   {id: 'move-breaks', title: '근무 중 움직이기', detail: '점심 후 10분 걷기 + 틈틈이 일어나기'}
@@ -55,14 +50,14 @@ export function getWeekKey(date) {
 
 export function getPlanForDay(date) {
   const day = date.getDay();
-  const items = [DAILY[0]];
+  const items = [];
   if (day >= 1 && day <= 5) items.push(...WORKDAY);
-  items.push(WORKOUTS[day], DAILY[1]);
+  items.push(WORKOUTS[day]);
   return items.map((item) => ({...item}));
 }
 
 export function createEmptyState() {
-  return {completions: {}, bloodPressure: {}, startDate: localDateKey(new Date())};
+  return {completions: {}, startDate: localDateKey(new Date())};
 }
 
 export function toggleTask(state, dateKey, taskId) {
@@ -76,28 +71,6 @@ export function toggleTask(state, dateKey, taskId) {
   };
 }
 
-export function saveBloodPressure(state, dateKey, period, systolic, diastolic) {
-  return {
-    ...state,
-    bloodPressure: {
-      ...state.bloodPressure,
-      [dateKey]: {
-        ...state.bloodPressure?.[dateKey],
-        [period]: {systolic: Number(systolic), diastolic: Number(diastolic)}
-      }
-    }
-  };
-}
-
-export function classifyHomeBloodPressure(systolic, diastolic) {
-  if (systolic >= 180 || diastolic >= 120) {
-    return {level: 'urgent', label: '매우 높음 · 재측정 후 의료기관 문의'};
-  }
-  if (systolic >= 135 || diastolic >= 85) {
-    return {level: 'high', label: '가정혈압 기준보다 높음'};
-  }
-  return {level: 'ok', label: '가정혈압 기준 범위'};
-}
 
 export function calculateWeekProgress(state, date) {
   const mondayKey = getWeekKey(date);

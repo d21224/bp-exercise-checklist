@@ -4,10 +4,8 @@ import {
   getWeekKey,
   getPlanForDay,
   calculateWeekProgress,
-  classifyHomeBloodPressure,
   createEmptyState,
-  toggleTask,
-  saveBloodPressure
+  toggleTask
 } from '../src/app-core.js';
 
 test('week key starts on Monday in local calendar', () => {
@@ -17,7 +15,7 @@ test('week key starts on Monday in local calendar', () => {
 
 test('weekday plan includes daily habits and the correct main workout', () => {
   const monday = getPlanForDay(new Date(2026, 8, 14));
-  assert.equal(monday.some((item) => item.id === 'morning-bp'), true);
+  assert.equal(monday.some((item) => item.id.includes('bp')), false);
   assert.equal(monday.some((item) => item.id === 'stairs'), true);
   assert.equal(monday.some((item) => item.id === 'workout-walk-35'), true);
 
@@ -52,20 +50,13 @@ test('task completion persists as a date-scoped boolean', () => {
 
 test('weekly progress counts only planned tasks', () => {
   const state = createEmptyState();
-  state.completions['2026-09-14'] = {'morning-bp': true};
+  state.completions['2026-09-14'] = {'stairs': true};
   const progress = calculateWeekProgress(state, new Date(2026, 8, 14));
   assert.equal(progress.done, 1);
   assert.ok(progress.total > 1);
   assert.equal(progress.percent, Math.round(100 / progress.total));
 });
 
-test('blood pressure values save by date and period', () => {
-  const saved = saveBloodPressure(createEmptyState(), '2026-09-17', 'morning', 127, 91);
-  assert.deepEqual(saved.bloodPressure['2026-09-17'].morning, {systolic: 127, diastolic: 91});
-});
-
-test('home blood pressure classification flags diastolic 85 or higher', () => {
-  assert.equal(classifyHomeBloodPressure(127, 91).level, 'high');
-  assert.equal(classifyHomeBloodPressure(127, 79).level, 'ok');
-  assert.equal(classifyHomeBloodPressure(181, 121).level, 'urgent');
+test('new state stores activity completion only', () => {
+  assert.deepEqual(Object.keys(createEmptyState()).sort(), ['completions', 'startDate']);
 });

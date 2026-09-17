@@ -1,25 +1,25 @@
 import {
   calculateWeekProgress,
-  classifyHomeBloodPressure,
   createEmptyState,
   getPlanForDay,
   getWeekKey,
   localDateKey,
-  saveBloodPressure,
   toggleTask
-} from './app-core.js';
+} from './app-core.js?v=1.2.0';
 
 const STORAGE_KEY = 'bp-exercise-checklist-v1-state';
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
 const today = new Date();
 const todayKey = localDateKey(today);
-let activePeriod = 'morning';
 let state = loadState();
+persist();
 
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return saved && saved.completions && saved.bloodPressure ? saved : createEmptyState();
+    return saved?.completions
+      ? {completions: saved.completions, startDate: saved.startDate || todayKey}
+      : createEmptyState();
   } catch {
     return createEmptyState();
   }
@@ -48,37 +48,6 @@ function renderToday() {
   `).join('');
 }
 
-function renderBloodPressure() {
-  const readings = state.bloodPressure?.[todayKey] || {};
-  const current = readings[activePeriod];
-  const feedback = document.querySelector('#bp-feedback');
-  document.querySelector('#bp-save').textContent = `${activePeriod === 'morning' ? '아침' : '저녁'} 혈압 저장`;
-  document.querySelectorAll('[data-period]').forEach((button) => {
-    const selected = button.dataset.period === activePeriod;
-    button.classList.toggle('is-active', selected);
-    button.setAttribute('aria-pressed', String(selected));
-  });
-  if (current) {
-    document.querySelector('#systolic').value = current.systolic;
-    document.querySelector('#diastolic').value = current.diastolic;
-    const category = classifyHomeBloodPressure(current.systolic, current.diastolic);
-    feedback.innerHTML = `<div class="bp-result ${category.level}"><strong>${current.systolic} / ${current.diastolic}</strong><span>${category.label}</span></div>`;
-  } else {
-    document.querySelector('#systolic').value = '';
-    document.querySelector('#diastolic').value = '';
-    feedback.innerHTML = '';
-  }
-
-  const entries = Object.entries(state.bloodPressure)
-    .sort(([a], [b]) => b.localeCompare(a))
-    .slice(0, 7)
-    .flatMap(([date, periods]) => ['morning', 'evening']
-      .filter((period) => periods[period])
-      .map((period) => ({date, period, ...periods[period]})));
-  document.querySelector('#bp-history').innerHTML = entries.length
-    ? entries.map((entry) => `<div class="history-item"><span>${entry.date.slice(5).replace('-', '.')} · ${entry.period === 'morning' ? '아침' : '저녁'}</span><strong>${entry.systolic} / ${entry.diastolic}</strong></div>`).join('')
-    : '<div class="history-item"><span>아직 저장된 기록이 없습니다.</span></div>';
-}
 
 function renderWeek() {
   const mondayKey = getWeekKey(today);
@@ -104,7 +73,6 @@ function renderWeek() {
 
 function renderAll() {
   renderToday();
-  renderBloodPressure();
   renderWeek();
 }
 
@@ -134,24 +102,6 @@ document.querySelectorAll('[data-view-button]').forEach((button) => {
   button.addEventListener('click', () => switchView(button.dataset.viewButton));
 });
 
-document.querySelectorAll('[data-period]').forEach((button) => {
-  button.addEventListener('click', () => {
-    activePeriod = button.dataset.period;
-    renderBloodPressure();
-  });
-});
-
-document.querySelector('#bp-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const systolic = Number(document.querySelector('#systolic').value);
-  const diastolic = Number(document.querySelector('#diastolic').value);
-  if (!Number.isFinite(systolic) || !Number.isFinite(diastolic)) return;
-  state = saveBloodPressure(state, todayKey, activePeriod, systolic, diastolic);
-  const taskId = activePeriod === 'morning' ? 'morning-bp' : 'evening-bp';
-  if (!state.completions?.[todayKey]?.[taskId]) state = toggleTask(state, todayKey, taskId);
-  persist();
-  renderAll();
-});
 
 renderAll();
 
